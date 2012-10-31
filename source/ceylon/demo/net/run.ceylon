@@ -2,6 +2,7 @@ import ceylon.net.httpd { Httpd, WebEndpointConfig, newHttpdInstance = newInstan
 
 doc "Run the module `ceylon.demo.net`."
 shared void run() {
+
 	Httpd httpd = newHttpdInstance();
 	httpd.addWebEndpointConfig(WebEndpointConfig("/path", "ceylon.demo.net", "ceylon.demo.net.Web", "0.3.3"));
 	httpd.addWebEndpointConfig(WebEndpointConfig("/async", "ceylon.demo.net", "ceylon.demo.net.WebAsync", "0.3.3"));

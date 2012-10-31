@@ -1,5 +1,5 @@
-module ceylon.demo.net '0.3.3' {
-    import ceylon.net '0.3.3';
+module ceylon.demo.net '0.4' {
+    import ceylon.net '0.4';
     
         // -- java modules --
 //    import java.base '7';
