@@ -1,16 +1,15 @@
-import ceylon.net.httpd { HttpResponse, HttpRequest, WebEndpointAsync, WebEndpointConfig, HttpCompletionHandler }
+import ceylon.net.httpd { HttpResponse, HttpRequest, WebEndpointAsync, WebEndpointConfig, HttpCompletionHandler, HttpSession }
 
-shared class WebAsync() satisfies WebEndpointAsync {
-
-	shared actual void init(WebEndpointConfig endpointConfig) {}
+shared class WebAsync() extends WebBase() satisfies WebEndpointAsync {
 	
+	shared actual void init(WebEndpointConfig endpointConfig) {}
+
 	shared actual void service(HttpRequest request, HttpResponse response, HttpCompletionHandler completionHandler) {
-		value url = request.uri();
-		response.addHeader("content-type", "text/html");
-		response.writeString("Hello from ASYNC ceylon web app. <br />\nRequested url: " url "<br />\n");
-		response.writeString("TS: " process.milliseconds "");
-		
+		testOperations(request, response);
 		completionHandler.handleComplete();
 	}
+
+
+	
 	
 }
