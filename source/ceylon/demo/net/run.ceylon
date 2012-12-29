@@ -1,16 +1,25 @@
-import ceylon.net.httpd { Httpd, WebEndpointConfig, newHttpdInstance = newInstance }
+import ceylon.net.httpd { Httpd, newHttpdInstance = newInstance, newConfig }
 
 doc "Run the module `ceylon.demo.net`."
+by "Matej Lazar"
 shared void run() {
-
-	Httpd httpd = newHttpdInstance();
-	httpd.addWebEndpointConfig(WebEndpointConfig("/path", "ceylon.demo.net", "ceylon.demo.net.Web", "0.4"));
-	httpd.addWebEndpointConfig(WebEndpointConfig("/async", "ceylon.demo.net", "ceylon.demo.net.WebAsync", "0.4"));
 	
-	value filesConfig = WebEndpointConfig("/file", "ceylon.net", "ceylon.net.httpd.endpoints.StaticFileEndpoint", "0.4");	
-	filesConfig.addParameter("files-dir", "/home/matej/temp/1__ulpload-test/");
+	print(process.vmVersion);
+	
+	Httpd httpd = newHttpdInstance();
+	
+	httpd.addWebEndpointConfig(newConfig("/path", "ceylon.demo.net.Web", "ceylon.demo.net:0.4"));
+	httpd.addWebEndpointConfig(newConfig("/async", "ceylon.demo.net.WebAsync", "ceylon.demo.net:0.4"));
+	
+	value filesConfig = newConfig("/file", "ceylon.net.httpd.endpoints.StaticFileEndpoint", "ceylon.net:0.4");	
+	//curently supported only external (not in car) file location
+	filesConfig.addAttribute("files-dir", "/home/matej/temp/1__ulpload-test/");
 	httpd.addWebEndpointConfig(filesConfig);
 	
+	//httpd.loadWebEndpointConfig(); //defaults to local module
+	//httpd.loadWebEndpointConfig("", "/ceylon/demo/net/web.properties"); //alternative file name
+	//httpd.loadWebEndpointConfig("module-id"); //
+	//httpd.loadWebEndpointConfig("module-id", "web.properties"); //
+	
 	httpd.start();
-
 }

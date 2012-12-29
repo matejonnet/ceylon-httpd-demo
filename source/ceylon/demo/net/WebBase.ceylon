@@ -1,5 +1,6 @@
-import ceylon.net.httpd { HttpRequest, HttpResponse, HttpSession, WebEndpointConfig }
+import ceylon.net.httpd { HttpRequest, HttpResponse, HttpSession }
 
+by "Matej Lazar"
 shared abstract class WebBase() {
 	
 	shared void testOperations(HttpRequest request, HttpResponse response) {
