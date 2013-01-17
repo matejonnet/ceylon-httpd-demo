@@ -29,8 +29,8 @@ shared abstract class WebBase() {
 			response.writeString("Person: " person.id() "");
 		} else {
 			Person p = Person();
-			p.name := "Janez";
-			p.surname := "Novak";
+			p.name = "Janez";
+			p.surname = "Novak";
 			session.put("pJN", p);
 			response.writeString("Person stored to session. Refresh page to read it from session.");
 		}
@@ -38,8 +38,8 @@ shared abstract class WebBase() {
 	}
 
 	class Person() {
-		shared variable String name := "";
-		shared variable String surname := "";
+		shared variable String name = "";
+		shared variable String surname = "";
 		
 		shared String id() {
 			return name + " " + surname;
