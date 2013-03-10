@@ -1,13 +1,16 @@
-import ceylon.net.httpd { HttpResponse, HttpRequest, HttpSession}
+import ceylon.net.http.server { Response, Request, Session}
+import ceylon.net.http { contentType }
+import ceylon.io.charset { utf8 }
 
 by "Matej Lazar"
 class Web() {
 
-    shared void service(HttpRequest request, HttpResponse response) {
-        HttpSession session = request.session();
+    shared void service(Request request, Response response) {
+        Session session = request.session;
         
-        value url = request.uri();
-        response.addHeader("content-type", "text/html");
+        value url = request.uri;
+        response.addHeader(contentType { contentType = "text/html"; charset = utf8; });
+        response.writeString("received header Content-Type: ``request.header("Content-Type") else "NOT SET"``<br />\n");
         response.writeString("Hello from ceylon web app. <br />\nRequested url: " + url + "<br />\n");
         response.writeString("TS: " + process.milliseconds.string + "<br />\n");
         
@@ -23,14 +26,15 @@ class Web() {
             response.writeString("Param bar NOT set.<br />\n");
         }
         
-        Object? oPerson = session.item("pJN");
+        Object? oPerson = session.get("pJN");
         
         if (is Person person = oPerson) {
-            response.writeString("Person: " + person.id());
+            response.writeString("Person: ``person``");
         } else {
             Person p = Person();
             p.name = "Janez";
             p.surname = "Novak";
+            p.message = "V kožuščku hudobnega fanta stopiclja mizar.";
             session.put("pJN", p);
             response.writeString("Person stored to session. Refresh page to read it from session.");
         }
@@ -40,9 +44,9 @@ class Web() {
 class Person() {
     shared variable String name = "";
     shared variable String surname = "";
-    
-    shared String id() {
-        return name + " " + surname;
+    shared variable String message = "";
+    shared actual String string {
+        return "``name`` ``surname``: ``message``";
     }
 }
 

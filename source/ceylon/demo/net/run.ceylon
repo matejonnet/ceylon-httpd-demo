@@ -1,5 +1,5 @@
-import ceylon.net.httpd { Server, newInstance, WebEndpointAsync, WebEndpoint, HttpRequest, HttpResponse, CompletionHandler}
-import ceylon.net.httpd.endpoints { StaticFileEndpoint }
+import ceylon.net.http.server.endpoints { serveStaticFile }
+import ceylon.net.http.server { Server, createServer, AsynchronousEndpoint, startsWith, Request, Response, Endpoint }
 
 doc "Run the module `ceylon.demo.net`."
 by "Matej Lazar"
@@ -11,27 +11,25 @@ shared void run() {
     
     print("Vm version: " + process.vmVersion);
     
-    Server server = newInstance();
+    Server server = createServer {};
     
-    StaticFileEndpoint staticFileEndpoint = StaticFileEndpoint();
-    staticFileEndpoint.externalPath = "/home/matej/temp/1__ulpload-test/";
-    server.addWebEndpoint(WebEndpointAsync {
-        service => staticFileEndpoint.service;
-        path = "/file";
+    server.addEndpoint(AsynchronousEndpoint {
+        service => serveStaticFile("/home/matej/temp/1__ulpload-test/");
+        path = startsWith("/file");
     });
     
-    server.addWebEndpoint(WebEndpoint {
+    server.addEndpoint(Endpoint {
         service => Web().service;
-        path = "/post";
+        path = startsWith("/post");
     });
     
-    void asyncInvocation(HttpRequest request, HttpResponse response, CompletionHandler completionHandler) {
+    void asyncInvocation(Request request, Response response, Callable<Anything, []> complete) {
         Web().service(request, response);
-        completionHandler.handleComplete();
+        complete();
     }
              
-    server.addWebEndpoint(WebEndpointAsync {
-            path = "/async";
+    server.addEndpoint(AsynchronousEndpoint {
+            path = startsWith("/async");
             service => asyncInvocation;
         }
     );
