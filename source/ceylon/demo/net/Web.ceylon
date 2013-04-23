@@ -16,6 +16,8 @@ class Web() {
         
         if (exists foo = request.parameter("foo")) {
             response.writeString("Param foo:" + foo + "<br />\n");
+            //TODO log
+            print("Param foo:" + foo + "<br />\n");
         } else {
             response.writeString("Param foo NOT set.<br />\n");
         }

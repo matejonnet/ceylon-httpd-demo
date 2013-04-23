@@ -1,5 +1,11 @@
 import ceylon.net.http.server.endpoints { serveStaticFile }
-import ceylon.net.http.server { Server, createServer, AsynchronousEndpoint, startsWith, Request, Response, Endpoint }
+import ceylon.net.http.server { Server, createServer, AsynchronousEndpoint, startsWith, Request, Response, Endpoint, endsWith }
+import org.jboss.logging { Logger {logger = getLogger}}
+import org.jboss.logmanager { LogManager = Logger {manager = getLogger}, Level { trace = TRACE, debug = DEBUG }}
+import org.jboss.logmanager.handlers { ConsoleHandler }
+import java.util.logging { SimpleFormatter }
+
+
 
 doc "Run the module `ceylon.demo.net`."
 by "Matej Lazar"
@@ -9,13 +15,45 @@ String prop_httpd_bind_host = "httpd.bind.host";
 
 shared void run() {
     
+    
+       //-Djava.util.logging.manager=org.jboss.logmanager.LogManager
+    
+    LogManager logManager = manager("org.xnio.nio");
+    print(logManager.level);
+
+    logManager.setLevelName("DEBUG");
+    logManager.level = debug;
+    
+    ConsoleHandler ch = ConsoleHandler();
+    ch.formatter = SimpleFormatter();
+    
+    logManager.addHandler(ch);
+    
+    print(logManager.level);
+    
+    LogManager utManager = manager("io.undertow");
+    utManager.setLevelName("DEBUG");
+    utManager.level = debug;
+    utManager.addHandler(ch);
+    
+    print(logManager.level);
+    
+
+    Logger log = logger("org.xnio.nio");
+    log.debug("Debug mesage");
+    log.info("Info mesage");
+    
     print("Vm version: " + process.vmVersion);
     
     Server server = createServer {};
     
     server.addEndpoint(AsynchronousEndpoint {
         service => serveStaticFile("/home/matej/temp/1__ulpload-test/");
-        path = startsWith("/file");
+        path = endsWith(".html") 
+               or endsWith(".txt")
+               or endsWith(".txt")
+               or endsWith(".tiff")
+               or endsWith(".jpg");
     });
     
     server.addEndpoint(Endpoint {
