@@ -2,9 +2,8 @@ import ceylon.net.http.server { Response, Request, Session}
 import ceylon.net.http { contentType }
 import ceylon.io.charset { utf8 }
 
-by "Matej Lazar"
+by("Matej Lazar")
 class Web() {
-
     shared void service(Request request, Response response) {
         Session session = request.session;
         
@@ -12,7 +11,7 @@ class Web() {
         response.addHeader(contentType { contentType = "text/html"; charset = utf8; });
         response.writeString("received header Content-Type: ``request.header("Content-Type") else "NOT SET"``<br />\n");
         response.writeString("Hello from ceylon web app. <br />\nRequested url: " + url + "<br />\n");
-        response.writeString("TS: " + process.milliseconds.string + "<br />\n");
+        response.writeString("TS: ``system.milliseconds`` <br />\n");
         
         if (exists foo = request.parameter("foo")) {
             response.writeString("Param foo:" + foo + "<br />\n");

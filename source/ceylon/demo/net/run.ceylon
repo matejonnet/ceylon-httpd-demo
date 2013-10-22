@@ -1,49 +1,48 @@
 import ceylon.net.http.server.endpoints { serveStaticFile }
 import ceylon.net.http.server { Server, createServer, AsynchronousEndpoint, startsWith, Request, Response, Endpoint, endsWith }
-import org.jboss.logging { Logger {logger = getLogger}}
-import org.jboss.logmanager { LogManager = Logger {manager = getLogger}, Level { trace = TRACE, debug = DEBUG }}
-import org.jboss.logmanager.handlers { ConsoleHandler }
-import java.util.logging { SimpleFormatter }
+//import org.jboss.logging { Logger {logger = getLogger}}
+//import org.jboss.logmanager { LogManager = Logger {manager = getLogger}, Level { trace = TRACE, debug = DEBUG }}
+//import org.jboss.logmanager.handlers { ConsoleHandler }
+//import java.util.logging { SimpleFormatter }
 
 
 
-doc "Run the module `ceylon.demo.net`."
-by "Matej Lazar"
+"Run the module `ceylon.demo.net`."
+by("Matej Lazar")
 
 String prop_httpd_bind_port = "httpd.bind.port";
 String prop_httpd_bind_host = "httpd.bind.host";
 
 shared void run() {
     
-    
        //-Djava.util.logging.manager=org.jboss.logmanager.LogManager
-    
-    LogManager logManager = manager("org.xnio.nio");
-    print(logManager.level);
+       //export JAVA_OPTS="-Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
-    logManager.setLevelName("DEBUG");
-    logManager.level = debug;
+//    LogManager logManager = manager("org.xnio.nio");
+//    print(logManager.level);
+//
+//    logManager.setLevelName("DEBUG");
+//    logManager.level = debug;
+//    
+//    ConsoleHandler ch = ConsoleHandler();
+//    ch.formatter = SimpleFormatter();
+//    
+//    logManager.addHandler(ch);
+//    
+//    print(logManager.level);
+//    
+//    LogManager utManager = manager("io.undertow");
+//    utManager.setLevelName("DEBUG");
+//    utManager.level = debug;
+//    utManager.addHandler(ch);
+//    
+//    print(logManager.level);
+//    
+//
+//    Logger log = logger("org.xnio.nio");
+//    log.debug("Debug mesage");
+//    log.info("Info mesage");
     
-    ConsoleHandler ch = ConsoleHandler();
-    ch.formatter = SimpleFormatter();
-    
-    logManager.addHandler(ch);
-    
-    print(logManager.level);
-    
-    LogManager utManager = manager("io.undertow");
-    utManager.setLevelName("DEBUG");
-    utManager.level = debug;
-    utManager.addHandler(ch);
-    
-    print(logManager.level);
-    
-
-    Logger log = logger("org.xnio.nio");
-    log.debug("Debug mesage");
-    log.info("Info mesage");
-    
-    print("Vm version: " + process.vmVersion);
     
     Server server = createServer {};
     
