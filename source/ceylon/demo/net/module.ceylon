@@ -4,6 +4,7 @@ module ceylon.demo.net "1.0.0" {
     import ceylon.net "1.0.0";
     import ceylon.io "1.0.0";
     import ceylon.collection "1.0.0";
-    
-    //import java.base "7";
+    import ceylon.html "1.0.0";
+    import ceylon.time "1.0.0";
+
 }
