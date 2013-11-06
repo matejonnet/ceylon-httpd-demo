@@ -13,7 +13,7 @@ class Web() {
         response.writeString("Hello from ceylon web app. <br />\nRequested url: " + url + "<br />\n");
         response.writeString("TS: ``system.milliseconds`` <br />\n");
         
-        if (exists foo = request.parameter("foo")) {
+        if (is String foo = request.parameter("foo")) {
             response.writeString("Param foo:" + foo + "<br />\n");
             //TODO log
             print("Param foo:" + foo + "<br />\n");
@@ -21,7 +21,7 @@ class Web() {
             response.writeString("Param foo NOT set.<br />\n");
         }
         
-        if (exists bar = request.parameter("bar")) {
+        if (is String bar = request.parameter("bar")) {
             response.writeString("Param bar:" + bar + "<br />\n");
         } else {
             response.writeString("Param bar NOT set.<br />\n");
