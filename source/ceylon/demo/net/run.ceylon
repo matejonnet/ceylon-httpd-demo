@@ -1,5 +1,6 @@
 import ceylon.net.http.server.endpoints { serveStaticFile }
-import ceylon.net.http.server { Server, createServer, AsynchronousEndpoint, startsWith, Request, Response, Endpoint, endsWith }
+import ceylon.net.http.server { Server, AsynchronousEndpoint, startsWith, Request, Response, Endpoint, endsWith, UploadedFile, newServer }
+import ceylon.io { SocketAddress }
 //import org.jboss.logging { Logger {logger = getLogger}}
 //import org.jboss.logmanager { LogManager = Logger {manager = getLogger}, Level { trace = TRACE, debug = DEBUG }}
 //import org.jboss.logmanager.handlers { ConsoleHandler }
@@ -44,7 +45,7 @@ shared void run() {
 //    log.info("Info mesage");
     
     
-    Server server = createServer {};
+    Server server = newServer {};
     
     server.addEndpoint(AsynchronousEndpoint {
         service => serveStaticFile("/home/matej/temp/1__ulpload-test/");
@@ -58,6 +59,13 @@ shared void run() {
     server.addEndpoint(Endpoint {
         service => Web().service;
         path = startsWith("/post");
+    });
+    
+    server.addEndpoint(Endpoint {
+        path = startsWith("/get");
+        void service(Request request, Response response) {
+            response.writeString(stringParameter(request.parameter("name")));
+        }
     });
     
     void asyncInvocation(Request request, Response response, Callable<Anything, []> complete) {
@@ -83,6 +91,13 @@ shared void run() {
         host = h;
     }
     
-    server.start(port, host);
+    server.start(SocketAddress(host, port));
+
 }
 
+String stringParameter(String|UploadedFile|Null string) {
+    if (is String string) {
+        return string;
+    }
+    return "";
+}

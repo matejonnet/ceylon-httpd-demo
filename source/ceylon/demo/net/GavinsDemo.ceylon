@@ -3,17 +3,16 @@ import ceylon.html {
     html5,
     Head,
     Body,
-    Div
+    Div, Doctype
 }
 import ceylon.html.serializer {
     NodeSerializer
 }
 import ceylon.net.http.server {
-    createServer,
     Endpoint,
     startsWith,
     Response,
-    Request
+    Request, newServer
 }
 import ceylon.time {
     Date,
@@ -23,7 +22,7 @@ import ceylon.time {
 Date date = today();
 
 Html html = Html { 
-    doctype = html5; 
+    html5;
     Head("Hello");
     Body {
         Div("Hello world!"),
@@ -33,7 +32,7 @@ Html html = Html {
 
 shared void runGavinsDemo() {
     print("Running the server");
-    createServer { 
+    newServer { 
         Endpoint { 
             path=startsWith("/"); 
             void service(Request request, Response response) {
