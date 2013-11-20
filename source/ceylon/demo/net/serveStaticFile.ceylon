@@ -1,3 +1,4 @@
+import ceylon.net.http.server.endpoints { EndpointOptions }
 import ceylon.file { Path, File, parsePath }
 import ceylon.io { newOpenFile, OpenFile }
 import ceylon.io.buffer { ByteBuffer, newByteBuffer }
@@ -7,7 +8,10 @@ import ceylon.net.http { contentType, contentLength }
 
 "Endpoint for serving static files."
 by("Matej Lazar")
-shared void serveStaticFile(externalPath, String fileMapper(Request request) => request.path)
+shared void serveStaticFile(
+    externalPath, 
+    String fileMapper(Request request) => request.path,
+    EndpointOptions endpointOptions = EndpointOptions())
 (Request request, Response response, Callable<Anything, []> complete) {
     
     "Root directory containing files."
@@ -31,18 +35,20 @@ shared void serveStaticFile(externalPath, String fileMapper(Request request) => 
             complete();
         }
         
-        FileWritter(openFile, response, onComplete).send();
+        FileWritter(openFile, response, onComplete, endpointOptions).send();
         
     } else {
         response.responseStatus=404;
         //TODO log
-        //print("file does not exist");
+        print("File ``filePath.absolutePath.string`` does not exist.");
     }
 }
 
-class FileWritter(OpenFile openFile, Response response, void completed()) {
+class FileWritter(OpenFile openFile, Response response, void completed(), EndpointOptions endpointOptions) {
     variable Integer available = openFile.size;
-    ByteBuffer byteBuffer = newByteBuffer(available);
+    variable Integer readFailed = 0;
+    Integer bufferSize = endpointOptions.outputBufferSize < available then endpointOptions.outputBufferSize else available;
+    ByteBuffer byteBuffer = newByteBuffer(bufferSize);
     
     shared void send() {
         read();
@@ -53,8 +59,17 @@ class FileWritter(OpenFile openFile, Response response, void completed()) {
             value read = openFile.read(byteBuffer);
             if (read == -1) {
                 available = 0;
+            } else if (read == 0) {
+                readFailed ++;
+                if (readFailed > 10) { //try to read 10 times
+                    //TODO log
+                    print("Error reading file ``openFile.resource.path``.");
+                    completed();
+                    return;
+                }
             } else {
                 available -= read;
+                readFailed = 0;
             }
             byteBuffer.flip();
             write();
@@ -71,8 +86,7 @@ class FileWritter(OpenFile openFile, Response response, void completed()) {
         }
         void onError(Exception exception) {
             //TODO log
-            print("Error writting file ``openFile.resource.path``: ");
-            exception.printStackTrace();
+            print("Error writting file ``openFile.resource.path``: " + exception.string);
             completed();
         }
         response.writeByteBufferAsynchronous(byteBuffer, onCompletion, onError);
