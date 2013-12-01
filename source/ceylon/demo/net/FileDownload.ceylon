@@ -1,7 +1,7 @@
 import ceylon.net.http.server {
     newServer, AsynchronousEndpoint, endsWith, Request
 }
-import ceylon.net.http.server.endpoints { EndpointOptions }
+import ceylon.net.http.server.endpoints { serveStaticFile, Options }
 
 shared void fileDownload() {
     print("File server");
